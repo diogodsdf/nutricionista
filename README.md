@@ -1,1 +1,2 @@
 - fist basic comand node.js
+-> node index.js
