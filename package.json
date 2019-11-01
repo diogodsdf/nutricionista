@@ -1,0 +1,23 @@
+{
+  "name": "nutricionista",
+  "version": "1.0.0",
+  "description": "gerenciador básico de nutrição",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diogodsdf/nutricionista.git"
+  },
+  "keywords": [
+    "nutrição",
+    "nutricionista"
+  ],
+  "author": "Diogo Soares Ferreira",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/diogodsdf/nutricionista/issues"
+  },
+  "homepage": "https://github.com/diogodsdf/nutricionista#readme"
+}
