@@ -11,7 +11,7 @@ app.get("/contato", function(req, res){
 });
 
 app.get("/sobre-empresa", function(req, res){
-  res.send("Pagina de Sobre Empresa!");
+  res.sendFile(__dirname + "/src/sobre-empresa.html");
 });
 
 app.get("/blog", function(req, res){
