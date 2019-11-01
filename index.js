@@ -1,5 +1,14 @@
-var http = require('http');
+const express = require("express");
 
-http.createServer(function(req, res){
-  res.end("Gerenciador Financeiro");
-}).listen(8080);
+const app = express();
+
+app.get("/", function(req, res){
+  res.send("Gerenciador Nutricional");
+});
+
+app.get("/contato", function(req, res){
+  res.send("Pagina de contato!");
+})
+
+app.listen(8080);
+
