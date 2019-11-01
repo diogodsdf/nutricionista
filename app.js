@@ -7,7 +7,7 @@ app.get("/", function(req, res){
 });
 
 app.get("/contato", function(req, res){
-  res.send("Pagina de contato!");
+  res.sendFile(__dirname + "/src/contato.html");
 });
 
 app.get("/sobre-empresa", function(req, res){
