@@ -1,1 +1,1 @@
-- basic comand node.js
+- fist basic comand node.js
