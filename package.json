@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/diogodsdf/nutricionista/issues"
   },
-  "homepage": "https://github.com/diogodsdf/nutricionista#readme"
+  "homepage": "https://github.com/diogodsdf/nutricionista#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
