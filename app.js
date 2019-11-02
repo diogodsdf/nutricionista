@@ -25,7 +25,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
 
-app.unsubscribe(express.static(path.join(__dirname, "public")))
+app.use(express.static(path.join(__dirname, "public")))
 // Rotas
 app.get('/pagamentos', function(req, res){
   res.render('pagamento');
