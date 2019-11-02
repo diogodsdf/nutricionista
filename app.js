@@ -1,25 +1,40 @@
 const express = require("express");
-
 const app = express();
+const handlebars =  require("express-handlebars");
+const bodyParser = require('body-parser')
+const moment = require('moment')
+const session = require('express-session')
+const flash = require('connect-flash')
+//const Pagamento = require("./models/Pagamento")
+const path = require("path")
 
-app.get("/", function(req, res){
-  res.sendFile(__dirname + "/src/index.html");
-});
+//Formatar data
 
-app.get("/contato", function(req, res){
-  res.sendFile(__dirname + "/src/contato.html");
-});
+// Configurações
+app.engine('handlebars', handlebars({
+  defaultLayout: 'main',
+  helpers: {
+    formatDate: (date) => {
+      return moment(date).format('DD/MM/YYYY')
+    }
+  }
+}))
+app.set('view engine', 'handlebars')
 
-app.get("/sobre-empresa", function(req, res){
-  res.sendFile(__dirname + "/src/sobre-empresa.html");
-});
+app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.json())
 
-app.get("/blog", function(req, res){
-  res.send("Pagina do Blog");
+
+app.unsubscribe(express.static(path.join(__dirname, "public")))
+// Rotas
+app.get('/pagamentos', function(req, res){
+  res.render('pagamento');
 });
-app.get("/adm", function(req, res){
-  res.send("Pagina do Adm");
+app.get('/cad-pagamento', function(req, res){
+  res.render('cad-pagamento');
+});
+app.post('/add-pagamento', function(req, res){
+  res.send("Nome: " + req.body.nome + "<br>Valor: " + req.body.valor + "<br>") 
 });
 
 app.listen(8080);
-
