@@ -7,15 +7,21 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <title>Gerenciador Nutricional</title>
+  <script defer src="/js/fontawesome-all.min.js"></script>
+  <link rel="stylesheet" href="/css/fontawesome.min.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 
 <body>
-  <div class="container">
+  {{>_header}}
+  <div class="d-flex">
+    {{>_menu}}
     {{{body}}}
   </div>
   <script src="/js/jquery.min.js"></script>
   <script src="/js/popper.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/dashboard.js"></script>
 </body>
 
 </html>

@@ -1,18 +1,18 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const Pagamento = new Schema({
+const Usuario = new Schema({
     nome: {
         type: String,
         required: true
     }, 
-    valor: {
-        type: Number,
+    email: {
+        type: email,
         required: true
     },
-    catpagamento: {
+    nivacesso: {
         type: Schema.Types.ObjectId,
-        ref: "catpagamento",
+        ref: "nivacesso",
         required: true
     },
     created: {
@@ -21,4 +21,4 @@ const Pagamento = new Schema({
     }
 })
 
-mongoose.model("pagamento", Pagamento)
+mongoose.model("usuario", Usuario)
