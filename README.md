@@ -1,4 +1,4 @@
-Desenvolver uma aplicação de negocio baseado em nutrição 
+Develop an application on the business based on nutrition 
 
 - Basic command utilized node.js -> node index.js
 
