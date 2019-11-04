@@ -476,7 +476,22 @@ router.post('/update-usuario', (req, res) => {
 })
 /** Visualizar Usuário */
 router.get('/vis-usuario/:id', (req, res) => {
-  console.log('vis-usuario') 
+  Usuario.findOne({ _id: req.params.id }).populate("nivacesso").then((usuario) => {
+    res.render("admin/usuario/ver", { usuario: usuario })
+  }).catch((erro) => {
+    req.flash("error_msg", "Error: Usuário não encontrado!")
+    res.render("admin/usuario")
+  })
+})
+/** Deletar Usuário */
+router.get('/del-usuario/:id', (req, res) => {
+  Usuario.deleteOne({_id: req.params.id}).then((usuario) => {
+    req.flash("success_msg", "Usuário apagado com sucesso!")
+        res.redirect("/admin/usuario")
+  }).catch((error) => {
+    req.flash("error_msg", "Error: Usuário não foi apagado com sucesso!")
+    res.redirect("/admin/usuario")
+  })
 })
 
 module.exports = router
