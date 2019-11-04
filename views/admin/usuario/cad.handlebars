@@ -14,7 +14,7 @@
         </div>
         {{>_msg}}
         <hr>
-        <form action="/admin/add-pagamento" method="POST">
+        <form action="/admin/add-usuario" method="POST">
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label><span class="text-danger">*</span> Nome</label>
@@ -23,8 +23,28 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    <label><span class="text-danger">*</span> Valor</label>
-                    <input name="valor" type="text" class="form-control" id="valor" placeholder="Valor do pagamento">
+                    <label><span class="text-danger">*</span> E-mail</label>
+                    <input name="email" type="email" class="form-control" id="email" placeholder="Seu melhor E-mail">
+                </div>
+            </div>
+             <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label><span class="text-danger">*</span> Senha</label>
+                    <input name="password" type="password" class="form-control" id="password" placeholder="Sua Senha">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label><span class="text-danger">*</span> Nível de Acesso</label>
+                    <select name="nivacesso" id="nivacesso" class="form-control">
+                        <option value="{{usuario.nivacesso._id}}">{{usuario.nivacesso.nome}}</option>
+                        {{#each nivacessos}}
+                            <option value="{{_id}}">{{nome}}</option>
+                        {{else}}
+                            <option value="" selected>Necessário Cadastrar Nível de Acesso</option>
+                        {{/each}}
+                    </select>
                 </div>
             </div>
             

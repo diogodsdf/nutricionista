@@ -44,13 +44,13 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    <label>Categoria de Pagamento</label>
+                    <label><span class="text-danger">*</span> Categoria de Pagamento</label>
                     <select name="catpagamento" id="catpagamento" class="form-control">
                         <option value="{{pagamento.catpagamento._id}}">{{pagamento.catpagamento.nome}}</option>
                         {{#each catpagamentos}}
                             <option value="{{_id}}">{{nome}}</option>
                         {{else}}
-                            <option value="">Nenhuma Categoria de pagamento encontrado</option>
+                            <option value="" selected>Necessário Cadastrar Categoria de pagamento</option>
                         {{/each}}
                     </select>
                 </div>

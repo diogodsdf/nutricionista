@@ -5,7 +5,7 @@
                 <h2 class="display-4 titulo">Cadastrar Pagamento</h2>
             </div>
             <div class="p-2">
-                <a href="/admin/niv-acesso">
+                <a href="/admin/pagamento">
                     <button class="btn btn-outline-info btn-sm">
                         Listar
                     </button>
@@ -25,6 +25,19 @@
                 <div class="form-group col-md-12">
                     <label><span class="text-danger">*</span> Valor</label>
                     <input name="valor" type="text" class="form-control" id="valor" placeholder="Valor do pagamento">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label><span class="text-danger">*</span> Categoria de Pagamento</label>
+                    <select name="catpagamento" id="catpagamento" class="form-control">
+                        <option value="{{pagamento.catpagamento._id}}">{{pagamento.catpagamento.nome}}</option>
+                        {{#each catpagamentos}}
+                            <option value="{{_id}}">{{nome}}</option>
+                        {{else}}
+                            <option value="" selected>Necessário Cadastrar Categoria de pagamento</option>
+                        {{/each}}
+                    </select>
                 </div>
             </div>
             

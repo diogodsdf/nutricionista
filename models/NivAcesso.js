@@ -10,6 +10,10 @@ const NivAcesso = new Schema({
       type: Number,
       required: true
     },
+    ref: {
+      type: Number,
+      required: true
+    },
     created: {
         type: Date,
         default: Date.now()

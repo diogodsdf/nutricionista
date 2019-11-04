@@ -28,7 +28,7 @@
         </div>
         {{>_msg}}
         <hr>
-        <form action="/admin/update-cat-pagamento" method="POST">
+        <form action="/admin/update-niv-acesso" method="POST">
             <input type="hidden" name="id" value="{{nivacesso._id}}">
             <div class="form-row">
                 <div class="form-group col-md-12">
@@ -39,9 +39,9 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    <label><span class="text-danger">*</span> Ordem</label>
+                    <label><span class="text-danger">*</span> Ordem: <b>{{nivacesso.ordem}}</b></label>
                     <input name="ordem" type="text" class="form-control" id="ordem"
-                        placeholder="Ordem" value="{{nivacesso.ordem}}">
+                        placeholder="Ordem" value="{{nivacesso.ordem}}" hidden>
                 </div>
             </div>
 
