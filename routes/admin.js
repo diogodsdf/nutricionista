@@ -476,7 +476,7 @@ router.post('/update-usuario', (req, res) => {
 })
 /** Visualizar Usuário */
 router.get('/vis-usuario/:id', (req, res) => {
-  console.log('vis-usuario')
+  console.log('vis-usuario') 
 })
 
 module.exports = router
