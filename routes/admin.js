@@ -474,5 +474,9 @@ router.post('/update-usuario', (req, res) => {
     res.redirect('/admin/usuario')
   })
 })
+/** Visualizar Usuário */
+router.get('/vis-usuario/:id', (req, res) => {
+  console.log('vis-usuario')
+})
 
 module.exports = router
