@@ -385,6 +385,7 @@ router.get('/del-cat-pagamento/:id', (req, res) => {
 })
 
 
+
 /** Usuario **/
 router.get('/usuario', (req, res) => {
   Usuario.find().sort("created").populate("nivacesso").then((usuarios) => {
@@ -441,16 +442,6 @@ router.post("/add-usuario", (req, res) => {
       res.redirect('/admin/usuario')
     })
   }
-
-  /*
-  Usuario.findOne({email: req.params.email}).then((usuario) => {
-    res.render("admin/usuario/ver", usuario,usuario)
-  }).catch((error) => {
-    req.flash("error_msg", "Error: Usuario não encontrado")
-    res.render("admin/usuario/cad")
-  })
-  */
-
 })
 /** Editar Usuário */
 router.get('/edit-usuario/:id', (req, res) => {
@@ -458,7 +449,6 @@ router.get('/edit-usuario/:id', (req, res) => {
     NivAcesso.find().then((nivacessos) => {
       res.render("admin/usuario/edit", { usuario: usuario, nivacessos: nivacessos })
     }).catch((error) => {
-
     })
     //res.render("admin/usuario/edit", { usuario: usuario})
   }).catch((error) => {
@@ -468,7 +458,6 @@ router.get('/edit-usuario/:id', (req, res) => {
 })
 /** Update Usuário */
 router.post('/update-usuario', (req, res) => {
-
   Usuario.findOne({ _id: req.body.id }).then((usuario) => {
     usuario.nome = req.body.nome,
       usuario.email = req.body.email,
