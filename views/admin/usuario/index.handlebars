@@ -25,7 +25,7 @@
           </tr>
         </thead>
         <tbody>
-          {{#each usuarios}}
+          {{#each usuarios.docs}}
           <tr>
             <td>{{nome}}</td>
             <td>{{email}}</td>
@@ -56,6 +56,33 @@
           {{/each}}
         </tbody>
       </table>
+
+      <nav aria-label="patinacao">
+        <ul class="pagination pagination-sm justify-content-center">
+
+
+          {{#if usuarios.prevPage}}
+          <li class="page-item">
+            <a class="page-link" href="?page=1">Primeira</a>
+          </li>
+          <li class="page-item"><a class="page-link" href="?page={{usuarios.prevPage}}">{{usuarios.prevPage}}</a></li>
+          {{else}}
+          <li class="page-item disabled">
+            <a class="page-link" href="#">Primeira</a>
+          </li>
+          {{/if}}
+          <li class="page-item active">
+            <a class="page-link" href="#">{{usuarios.page}}</a>
+          </li>
+          {{#if usuarios.nextPage}}
+          <li class="page-item"><a class="page-link" href="?page={{usuarios.nextPage}}">{{usuarios.nextPage}}</a></li>
+          <li class="page-item"><a class="page-link" href="?page={{usuarios.totalPages}}">Última</a></li>
+         
+          {{else}}
+          <li class="page-item disabled"><a class="page-link" href="#">Última</a></li>
+          {{/if}}
+        </ul>
+      </nav>
     </div>
   </div>
 </div>

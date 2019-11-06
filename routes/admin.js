@@ -388,12 +388,22 @@ router.get('/del-cat-pagamento/:id', (req, res) => {
 
 /** Usuario **/
 router.get('/usuario', (req, res) => {
+  const {page = 1} = req.query
+  Usuario.paginate({}, {sort:{ created: -1 },populate: 'nivacesso' ,page : page, limit: 10}).then((usuarios) => {
+    //console.log(usuarios)
+    res.render("admin/usuario/index", { usuarios: usuarios })
+  }).catch((erro) => {
+    req.flash("error_msg", "Error: Pagamento não encontrado!")
+    res.render("admin/usuario/index")
+  })
+  /*
   Usuario.find().sort("created").populate("nivacesso").then((usuarios) => {
     res.render("admin/usuario/index", { usuarios: usuarios })
   }).catch((erro) => {
     req.flash("error_msg", "Error: Pagamento não encontrado!")
     res.render("admin/usuario/index")
   })
+  */
 })
 /** Cadastar Usuario */
 router.get('/cad-usuario', (req, res) => {
@@ -493,5 +503,7 @@ router.get('/del-usuario/:id', (req, res) => {
     res.redirect("/admin/usuario")
   })
 })
+
+
 
 module.exports = router
