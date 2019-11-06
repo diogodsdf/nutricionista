@@ -12,4 +12,6 @@ https://www.npmjs.com/package/sequelize </br>
 https://handlebarsjs.com/ </br>
 https://www.npmjs.com/package/body-parser </br>
 
+https://www.npmjs.com/package/mongoose-paginate-v2 </br>
+
 start mongo, command mongod.
