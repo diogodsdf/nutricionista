@@ -18,13 +18,13 @@
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label><span class="text-danger">*</span> Nome</label>
-                    <input name="nome" type="text" class="form-control" id="nome" placeholder="Nome da categoria de pagamento" autofocus>
+                    <input name="nome" type="text" class="form-control" id="nome" placeholder="Nome da categoria de pagamento" autofocus value="{{usuario.nome}}">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label><span class="text-danger">*</span> E-mail</label>
-                    <input name="email" type="email" class="form-control" id="email" placeholder="Seu melhor E-mail">
+                    <input name="email" type="email" class="form-control" id="email" placeholder="Seu melhor E-mail" value="{{usuario.email}}">
                 </div>
             </div>
              <div class="form-row">
@@ -36,7 +36,7 @@
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label><span class="text-danger">*</span> Confirma Senha</label>
-                    <input name="conf_password" type="password" class="form-control" id="conf_password" placeholder="Confirma a Senha">
+                    <input name="rep_password" type="password" class="form-control" id="rep_password" placeholder="Confirma a Senha">
                 </div>
             </div>
             
@@ -44,16 +44,15 @@
                 <div class="form-group col-md-12">
                     <label><span class="text-danger">*</span> Nível de Acesso</label>
                     <select name="nivacesso" id="nivacesso" class="form-control">
-                        <option value="{{usuario.nivacesso._id}}">{{usuario.nivacesso.nome}}</option>
+                        <option value="{{nivacesso._id}}">{{nivacesso.nome}}</option>
                         {{#each nivacessos}}
                             <option value="{{_id}}">{{nome}}</option>
                         {{else}}
-                            <option value="" selected>Necessário Cadastrar Nível de Acesso</option>
+                            <option value="">Nenhuma Categoria de pagamento encontrado</option>
                         {{/each}}
                     </select>
                 </div>
             </div>
-            
             <p>
                 <span class="text-danger">* </span>Campo obrigatório
             </p>
