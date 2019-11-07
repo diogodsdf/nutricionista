@@ -68,12 +68,12 @@ router.post('/add-niv-acesso', (req, res) => {
 //visualizar dados niv-acesso
 router.get('/vis-niv-acesso/:id', (req, res) => {
   NivAcesso.findOne({ _id: req.params.id }).then((nivacesso) => {
-    Usuario.find({ nivacesso: nivacesso._id}).then((usuarios) => {
+    Usuario.find({ nivacesso: nivacesso._id }).then((usuarios) => {
       res.render("admin/niv-acesso/ver", { nivacesso: nivacesso, usuarios, usuarios })
     }).catch((error) => {
 
     })
-   
+
   }).catch((erro) => {
     req.flash("error_msg", "Error: Categoria de pagamento não encontrado!")
     res.render("admin/niv-acesso")
@@ -182,13 +182,13 @@ router.get('/del-niv-acesso/:id', (req, res) => {
 
 /** Pagamento **/
 router.get('/pagamento', (req, res) => {
-  Pagamento.find().sort("created").populate("catpagamento").then((pagamentos) => {
+  const { page = 1 } = req.query
+  Pagamento.paginate({}, { sort: { created: -1 }, populate: 'catpagamento', page: page, limit: 10 }).then((pagamentos) => {
     res.render("admin/pagamento/index", { pagamentos: pagamentos })
   }).catch((erro) => {
     req.flash("error_msg", "Error: Pagamento não encontrado!")
     res.render("admin/pagamento/index")
   })
-
 })
 //visualizar dados pagamento
 router.get('/vis-pagamento/:id', (req, res) => {
@@ -202,7 +202,6 @@ router.get('/vis-pagamento/:id', (req, res) => {
 //formulario cadastrar -pagamento
 router.get('/cad-pagamento', (req, res) => {
   CatPagamento.find().then((catpagamentos) => {
-
     res.render("admin/pagamento/cad", { catpagamentos: catpagamentos })
   }).catch((error) => {
     req.flash("error_msg", "Error: Categoria Pagamento não encontrado!")
@@ -234,7 +233,7 @@ router.post('/add-pagamento', (req, res) => {
   } else {
     const addPagamento = {
       nome: req.body.nome,
-      valor: req.body.valor,
+      valor: req.body.valor.toString().replace(",","."),
       catpagamento: req.body.catpagamento,
     }
     new Pagamento(addPagamento).save().then(() => {
@@ -265,7 +264,7 @@ router.get('/edit-pagamento/:id', (req, res) => {
 router.post('/update-pagamento', (req, res) => {
   Pagamento.findOne({ _id: req.body.id }).then((pagamento) => {
     pagamento.nome = req.body.nome,
-      pagamento.valor = req.body.valor,
+      pagamento.valor = req.body.valor.toString().replace(",","."),
       pagamento.catpagamento = req.body.catpagamento
 
     pagamento.save().then(() => {
@@ -305,6 +304,7 @@ router.get('/cat-pagamento', (req, res) => {
 //visualizar dados cat-pagamento
 router.get('/vis-cat-pagamento/:id', (req, res) => {
   CatPagamento.findOne({ _id: req.params.id }).then((catpagamento) => {
+    console.log(catpagamento)
     res.render("admin/cat-pagamento/ver", { catpagamento: catpagamento })
   }).catch((erro) => {
     req.flash("error_msg", "Error: Categoria de pagamento não encontrado!")
@@ -388,8 +388,8 @@ router.get('/del-cat-pagamento/:id', (req, res) => {
 
 /** Usuario **/
 router.get('/usuario', (req, res) => {
-  const {page = 1} = req.query
-  Usuario.paginate({}, {sort:{ created: -1 },populate: 'nivacesso' ,page : page, limit: 10}).then((usuarios) => {
+  const { page = 1 } = req.query
+  Usuario.paginate({}, { sort: { created: -1 }, populate: 'nivacesso', page: page, limit: 10 }).then((usuarios) => {
     //console.log(usuarios)
     res.render("admin/usuario/index", { usuarios: usuarios })
   }).catch((erro) => {
@@ -495,9 +495,9 @@ router.get('/vis-usuario/:id', (req, res) => {
 })
 /** Deletar Usuário */
 router.get('/del-usuario/:id', (req, res) => {
-  Usuario.deleteOne({_id: req.params.id}).then((usuario) => {
+  Usuario.deleteOne({ _id: req.params.id }).then((usuario) => {
     req.flash("success_msg", "Usuário apagado com sucesso!")
-        res.redirect("/admin/usuario")
+    res.redirect("/admin/usuario")
   }).catch((error) => {
     req.flash("error_msg", "Error: Usuário não foi apagado com sucesso!")
     res.redirect("/admin/usuario")

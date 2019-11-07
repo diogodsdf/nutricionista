@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2');
 const Schema = mongoose.Schema
 
 const Pagamento = new Schema({
@@ -20,5 +21,6 @@ const Pagamento = new Schema({
         default: Date.now()
     }
 })
+Pagamento.plugin(mongoosePaginate)
 
 mongoose.model("pagamento", Pagamento)
