@@ -14,7 +14,8 @@ const flash = require('connect-flash')
 //Sessão
 app.use(session({
   secret: 'mfacilonesession',
-  resave: true
+  resave: false,
+  saveUninitialized: true 
 }))
 //Flash
 app.use(flash())
