@@ -68,7 +68,7 @@ router.post('/add-niv-acesso', (req, res) => {
 //visualizar dados niv-acesso
 router.get('/vis-niv-acesso/:id', (req, res) => {
   NivAcesso.findOne({ _id: req.params.id }).then((nivacesso) => {
-    Usuario.find({ nivacesso: nivacesso._id }).then((usuarios) => {
+    Usuario.find({ nivacesso: nivacesso._id }).sort({created: -1}).limit(20).then((usuarios) => {
       res.render("admin/niv-acesso/ver", { nivacesso: nivacesso, usuarios, usuarios })
     }).catch((error) => {
 
