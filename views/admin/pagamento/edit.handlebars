@@ -10,7 +10,7 @@
                     <a href="/admin/vis-pagamento/{{pagamento._id}}"
                         class="btn btn-outline-primary btn-sm">Visualizar</a>
                     <a href="/admin/del-pagamento/{{pagamento._id}}"
-                        class="btn btn-outline-danger btn-sm">Apagar</a>
+                        class="btn btn-outline-danger btn-sm" data-confirm="Tem certeza de que deseja excluir o item o selecionando">Apagar</a>
                 </span>
                 <div class="dropdown d-block d-md-none">
                     <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="acoesListar"
@@ -20,7 +20,7 @@
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="acoesListar">
                         <a class="dropdown-item" href="/admin/pagamento">Listar</a>
                         <a class="dropdown-item" href="/admin/vis-pagamento/{{pagamento._id}}">Visualizar</a>
-                        <a class="dropdown-item" href="/admin/del-pagamento/{{pagamento._id}}">Apagar</a>
+                        <a class="dropdown-item" href="/admin/del-pagamento/{{pagamento._id}}" data-confirm="Tem certeza de que deseja excluir o item o selecionando">Apagar</a>
                     </div>
                 </div>
             </div>
