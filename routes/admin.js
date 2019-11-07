@@ -71,7 +71,8 @@ router.get('/vis-niv-acesso/:id', (req, res) => {
     Usuario.find({ nivacesso: nivacesso._id }).sort({created: -1}).limit(20).then((usuarios) => {
       res.render("admin/niv-acesso/ver", { nivacesso: nivacesso, usuarios, usuarios })
     }).catch((error) => {
-
+      req.flash("error_msg", "Error: Usuarios não encontrado!")
+      res.render("admin/niv-acesso")
     })
 
   }).catch((erro) => {
