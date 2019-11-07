@@ -409,7 +409,7 @@ router.get('/usuario', (req, res) => {
 })
 /** Cadastar Usuario */
 router.get('/cad-usuario', (req, res) => {
-  NivAcesso.find().then((nivacessos) => {
+  NivAcesso.find().sort({ ordem: +1 }).then((nivacessos) => {
     res.render("admin/usuario/cad", { nivacessos: nivacessos })
   }).catch((error) => {
     req.flash("erro_msg", "Error: Nivel de acesso não encontrado")
@@ -421,61 +421,93 @@ router.post("/add-usuario", (req, res) => {
   var dados_usuario = req.body
   var errors = []
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
-    errors.push({ error: "Necessário preencher o campo nome" })
+    errors.push({ error: "Erro: Necessário preencher o campo nome!" })
+    return temErro()
   }
   if (!req.body.email || typeof req.body.email == undefined || req.body.email == null) {
-    errors.push({ error: "Necessário preencher o campo e-mail" })
+    errors.push({ error: "Erro: Necessário preencher o campo e-mail!" })
+    return temErro()
   }
   if (!req.body.password || typeof req.body.password == undefined || req.body.password == null) {
-    errors.push({ error: "Necessário preencher o campo senha" })
+    errors.push({ error: "Erro: Necessário preencher o campo senha!" })
+    return temErro()
+  }
+  if (!req.body.rep_password || typeof req.body.rep_password == undefined || req.body.rep_password == null) {
+    errors.push({ error: "Erro: Necessário preencher o campo repetir senha!" })
+    return temErro()
+  }
+  if (req.body.password != req.body.rep_password) {
+    errors.push({ error: "Erro: As senhas são diferentes!" })
+    return temErro()
+  }
+  if (req.body.password.length < 6) {
+    errors.push({ error: "Erro: Senha muito fraca!" })
+    return temErro()
   }
   if (!req.body.nivacesso || typeof req.body.nivacesso == undefined || req.body.nivacesso == null) {
     errors.push({ error: "Necessário preencher o campo nível de acesso" })
+    return temErro()
   }
-  if (errors.length > 0) {
-    NivAcesso.find().then((nivacessos) => {
-      res.render("admin/usuario/cad", { errors: errors, nivacessos: nivacessos, usuario : dados_usuario })
-    }).catch((error) => {
-      req.flash("erro_msg", "Error: Nivel de acesso não encontrado")
-      res.render("admin/usuario/cad")
-    })
-    //res.render("/admin/cad-usuario", { errors: errors })
-  } else {
+  temErro();
+  function temErro() {
+    if (errors.length > 0) {
+      if (dados_usuario.nivacesso) {
+        NivAcesso.findOne({ _id: dados_usuario.nivacesso }).then((nivacesso) => {
+          NivAcesso.find().sort({ ordem: +1 }).then((nivacessos) => {
+            res.render("admin/usuario/cad", { errors: errors, nivacessos: nivacessos, nivacesso: nivacesso, usuario: dados_usuario })
+          })
+        })
+      } else {
+        NivAcesso.find().sort({ ordem: +1 }).then((nivacessos) => {
+          res.render("admin/usuario/cad", { errors: errors, nivacessos: nivacessos, usuario: dados_usuario })
+        })
+      }
+    } else {
+      buscaUser();
+    }
+  }
+  function buscaUser() {
     Usuario.findOne({ email: req.body.email }).then((usuario) => {
       if (usuario) {
-        errors.push({ error: "Error: Este e-mail já está cadastrado!"})
-        res.render("admin/usuario/cad", {errors: errors, usuario: dados_usuario})
+        errors.push({ error: "Error: Este e-mail já está cadastrado!" })
+        //res.render("admin/usuario/cad", { errors: errors, nivacesso: nivacesso, usuario: dados_usuario })
+        temErro();
       } else {
-        console.log('não repetido')
+        const addUsuario = new Usuario({
+          nome: req.body.nome,
+          email: req.body.email,
+          nivacesso: req.body.nivacesso,
+          password: req.body.password
+        })
+        bcryptjs.genSalt(10, (erro, salt) => {
+          bcryptjs.hash(addUsuario.password, salt, (erro, hash) => {
+            if (erro) {
+              errors.push({ error: "Error: Não foi possível cadastrar, entre em contato com o administrador!" })
+              res.render("admin/usuario")
+            } else {
+              addUsuario.password = hash
 
+              addUsuario.save().then(() => {
+                req.flash("success_msg", "Usuário cadastrado com sucesso!")
+                res.redirect('/admin/usuario')
+              }).catch((erro) => {
+                errors.push({ error: "Error: Usuário não foi cadastrado com sucesso!" })
+                res.render("admin/usuario/cad", { errors: errors, usuario: dados_usuario })
+              })
+            }
+          })
+        })
       }
-    }).catch((error) => {
-
-    })
-
-    /*
-    const addUsuario = {
-      nome: req.body.nome,
-      email: req.body.email,
-      password: req.body.password,
-      nivacesso: req.body.nivacesso
-      
-    }
-    
-    new Usuario(addUsuario).save().then(() => {
-      req.flash("success_msg", "Usuario cadastrado com sucesso!")
-      res.redirect('/admin/usuario')
     }).catch((erro) => {
-      req.flash("error_msg", "Error: Usuario não foi cadastrado com sucesso")
-      res.redirect('/admin/usuario')
+      req.flash("error_msg", "Error: Não foi possível cadastrar, entre em contato com o administrador!")
+      res.render("admin/usuario/cad")
     })
-    */
   }
 })
 /** Editar Usuário */
 router.get('/edit-usuario/:id', (req, res) => {
   Usuario.findOne({ _id: req.params.id }).populate("nivacesso").then((usuario) => {
-    NivAcesso.find().then((nivacessos) => {
+    NivAcesso.find().sort({ ordem: +1 }).then((nivacessos) => {
       res.render("admin/usuario/edit", { usuario: usuario, nivacessos: nivacessos })
     }).catch((error) => {
     })
