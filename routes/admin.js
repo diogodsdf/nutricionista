@@ -2,6 +2,7 @@
 const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
+const bcryptjs = require('bcryptjs')
 require("../models/CatPagamento")
 const CatPagamento = mongoose.model('catpagamento')
 require("../models/Pagamento")
@@ -68,7 +69,7 @@ router.post('/add-niv-acesso', (req, res) => {
 //visualizar dados niv-acesso
 router.get('/vis-niv-acesso/:id', (req, res) => {
   NivAcesso.findOne({ _id: req.params.id }).then((nivacesso) => {
-    Usuario.find({ nivacesso: nivacesso._id }).sort({created: -1}).limit(20).then((usuarios) => {
+    Usuario.find({ nivacesso: nivacesso._id }).sort({ created: -1 }).limit(20).then((usuarios) => {
       res.render("admin/niv-acesso/ver", { nivacesso: nivacesso, usuarios, usuarios })
     }).catch((error) => {
       req.flash("error_msg", "Error: Usuarios não encontrado!")
@@ -234,7 +235,7 @@ router.post('/add-pagamento', (req, res) => {
   } else {
     const addPagamento = {
       nome: req.body.nome,
-      valor: req.body.valor.toString().replace(",","."),
+      valor: req.body.valor.toString().replace(",", "."),
       catpagamento: req.body.catpagamento,
     }
     new Pagamento(addPagamento).save().then(() => {
@@ -265,7 +266,7 @@ router.get('/edit-pagamento/:id', (req, res) => {
 router.post('/update-pagamento', (req, res) => {
   Pagamento.findOne({ _id: req.body.id }).then((pagamento) => {
     pagamento.nome = req.body.nome,
-      pagamento.valor = req.body.valor.toString().replace(",","."),
+      pagamento.valor = req.body.valor.toString().replace(",", "."),
       pagamento.catpagamento = req.body.catpagamento
 
     pagamento.save().then(() => {
@@ -417,6 +418,7 @@ router.get('/cad-usuario', (req, res) => {
 })
 /** Add Usuario */
 router.post("/add-usuario", (req, res) => {
+  var dados_usuario = req.body
   var errors = []
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     errors.push({ error: "Necessário preencher o campo nome" })
@@ -432,19 +434,34 @@ router.post("/add-usuario", (req, res) => {
   }
   if (errors.length > 0) {
     NivAcesso.find().then((nivacessos) => {
-      res.render("admin/usuario/cad", { errors: errors, nivacessos: nivacessos })
+      res.render("admin/usuario/cad", { errors: errors, nivacessos: nivacessos, usuario : dados_usuario })
     }).catch((error) => {
       req.flash("erro_msg", "Error: Nivel de acesso não encontrado")
       res.render("admin/usuario/cad")
     })
     //res.render("/admin/cad-usuario", { errors: errors })
   } else {
+    Usuario.findOne({ email: req.body.email }).then((usuario) => {
+      if (usuario) {
+        errors.push({ error: "Error: Este e-mail já está cadastrado!"})
+        res.render("admin/usuario/cad", {errors: errors, usuario: dados_usuario})
+      } else {
+        console.log('não repetido')
+
+      }
+    }).catch((error) => {
+
+    })
+
+    /*
     const addUsuario = {
       nome: req.body.nome,
       email: req.body.email,
       password: req.body.password,
       nivacesso: req.body.nivacesso
+      
     }
+    
     new Usuario(addUsuario).save().then(() => {
       req.flash("success_msg", "Usuario cadastrado com sucesso!")
       res.redirect('/admin/usuario')
@@ -452,6 +469,7 @@ router.post("/add-usuario", (req, res) => {
       req.flash("error_msg", "Error: Usuario não foi cadastrado com sucesso")
       res.redirect('/admin/usuario')
     })
+    */
   }
 })
 /** Editar Usuário */
