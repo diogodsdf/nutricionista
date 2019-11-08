@@ -61,7 +61,7 @@ app.listen(PORT,() => {
   console.log("Servidor iniciado!");
 })
 
-/*
+/* // Refactored in router Admin.js
 // Definir o Schema
 // https://mongoosejs.com/docs/guide.html#definition
 const PagamentoSchema = mongoose.Schema({
