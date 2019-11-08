@@ -8,14 +8,22 @@
   <title>Gerenciador Nutricional</title>
   <script defer src="/js/fontawesome-all.min.js"></script>
   <link rel="stylesheet" href="/css/fontawesome.min.css">
+  {{#if user}}
   <link rel="stylesheet" href="/css/dashboard.css">
+  {{else}}
+  <link rel="stylesheet" href="/css/signin.css">
+  {{/if}}
 </head>
 <body>
-  {{>_header}}
+  {{#if user}}
+{{>_header}}
   <div class="d-flex">
     {{>_menu}}
     {{{body}}}
   </div>
+  {{else}}
+  {{{body}}}
+  {{/if}}
   <script src="/js/jquery.min.js"></script>
   <script src="/js/popper.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>

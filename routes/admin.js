@@ -11,14 +11,32 @@ require("../models/NivAcesso")
 const NivAcesso = mongoose.model('nivacesso')
 require("../models/Usuario")
 const Usuario = mongoose.model('usuario')
+const passport = require('passport')
+const {eAdmin} = require("../helpers/eAdmin")
 
 
-router.get('/', (req, res) => {
+
+router.get('/', eAdmin, (req, res) => {
   res.render("admin/index")
 })
 
+router.get('/login', (req, res) => {
+  res.render("admin/login")
+})
+router.post('/login', (req, res, next) => {
+  passport.authenticate("local", {
+    successRedirect: "/admin/",
+    failureRedirect: "/admin/login",
+    failureFlash: true
+  })(req, res, next)
+})
+router.get('/logout', (req, res) => {
+  req.logout()
+  req.flash("success_msg", "Deslogado com sucesso!")
+  res.redirect('login')
+})
 /** Nivel Acesso **/
-router.get('/niv-acesso', (req, res) => {
+router.get('/niv-acesso', eAdmin, (req, res) => {
   NivAcesso.find().sort({ ordem: 1 }).then((nivacesso) => {
     res.render("admin/niv-acesso/index", { nivacessos: nivacesso })
   }).catch((erro) => {
@@ -27,7 +45,7 @@ router.get('/niv-acesso', (req, res) => {
   })
 })
 //formulario cadastrar -usuario
-router.get('/cad-niv-acesso', (req, res) => {
+router.get('/cad-niv-acesso', eAdmin, (req, res) => {
   NivAcesso.find().then((nivacesso) => {
     var ordemUtimo = 0
     nivacesso.forEach(nivacesso => {
@@ -42,7 +60,7 @@ router.get('/cad-niv-acesso', (req, res) => {
 })
 //inserir dados no db -pagamento
 //falta fazer verificação se existe repetido
-router.post('/add-niv-acesso', (req, res) => {
+router.post('/add-niv-acesso', eAdmin, (req, res) => {
   var errors = []
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     errors.push({ error: "Necessário preencher o campo nome!" })
@@ -67,7 +85,7 @@ router.post('/add-niv-acesso', (req, res) => {
   }
 })
 //visualizar dados niv-acesso
-router.get('/vis-niv-acesso/:id', (req, res) => {
+router.get('/vis-niv-acesso/:id', eAdmin, (req, res) => {
   NivAcesso.findOne({ _id: req.params.id }).then((nivacesso) => {
     Usuario.find({ nivacesso: nivacesso._id }).sort({ created: -1 }).limit(20).then((usuarios) => {
       res.render("admin/niv-acesso/ver", { nivacesso: nivacesso, usuarios, usuarios })
@@ -83,7 +101,7 @@ router.get('/vis-niv-acesso/:id', (req, res) => {
 })
 
 //formulario editar
-router.get('/edit-niv-acesso/:id', (req, res) => {
+router.get('/edit-niv-acesso/:id', eAdmin, (req, res) => {
   NivAcesso.findOne({ _id: req.params.id }).then((nivacesso) => {
     res.render("admin/niv-acesso/edit", { nivacesso: nivacesso })
   }).catch((erro) => {
@@ -93,7 +111,7 @@ router.get('/edit-niv-acesso/:id', (req, res) => {
 })
 //atualizar dados editados
 //falta fazer verificação se existe repetido
-router.post('/update-niv-acesso', (req, res) => {
+router.post('/update-niv-acesso', eAdmin, (req, res) => {
   NivAcesso.findOne({ _id: req.body.id }).then((nivacesso) => {
     nivacesso.nome = req.body.nome
     nivacesso.ref = nivacesso.ordem
@@ -111,7 +129,7 @@ router.post('/update-niv-acesso', (req, res) => {
   })
 })
 //ordenar niv-acesso
-router.get('/ordem-niv-accesso/:id', (req, res) => {
+router.get('/ordem-niv-accesso/:id', eAdmin, (req, res) => {
   var id1 = req.params.id
   NivAcesso.findOne({ _id: id1 }).then((nivacesso) => {
     if (nivacesso.ordem == 1) {
@@ -157,7 +175,7 @@ router.get('/ordem-niv-accesso/:id', (req, res) => {
   })
 })
 //deletar dados db niv-acesso
-router.get('/del-niv-acesso/:id', (req, res) => {
+router.get('/del-niv-acesso/:id', eAdmin, (req, res) => {
   Usuario.findOne({ nivacesso: req.params.id }).then((usuario) => {
     //console.log(usuario.nome)
     if (usuario) {
@@ -183,7 +201,7 @@ router.get('/del-niv-acesso/:id', (req, res) => {
 
 
 /** Pagamento **/
-router.get('/pagamento', (req, res) => {
+router.get('/pagamento', eAdmin, (req, res) => {
   const { page = 1 } = req.query
   Pagamento.paginate({}, { sort: { created: -1 }, populate: 'catpagamento', page: page, limit: 10 }).then((pagamentos) => {
     res.render("admin/pagamento/index", { pagamentos: pagamentos })
@@ -193,7 +211,7 @@ router.get('/pagamento', (req, res) => {
   })
 })
 //visualizar dados pagamento
-router.get('/vis-pagamento/:id', (req, res) => {
+router.get('/vis-pagamento/:id', eAdmin, (req, res) => {
   Pagamento.findOne({ _id: req.params.id }).populate("catpagamento").then((pagamento) => {
     res.render("admin/pagamento/ver", { pagamento: pagamento })
   }).catch((erro) => {
@@ -202,7 +220,7 @@ router.get('/vis-pagamento/:id', (req, res) => {
   })
 })
 //formulario cadastrar -pagamento
-router.get('/cad-pagamento', (req, res) => {
+router.get('/cad-pagamento', eAdmin, (req, res) => {
   CatPagamento.find().then((catpagamentos) => {
     res.render("admin/pagamento/cad", { catpagamentos: catpagamentos })
   }).catch((error) => {
@@ -213,7 +231,7 @@ router.get('/cad-pagamento', (req, res) => {
 })
 //inserir dados no db -pagamento
 //falta fazer verificação se existe repetido
-router.post('/add-pagamento', (req, res) => {
+router.post('/add-pagamento', eAdmin, (req, res) => {
   var errors = []
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     errors.push({ error: "Necessário preencher o campo nome!" })
@@ -248,7 +266,7 @@ router.post('/add-pagamento', (req, res) => {
   }
 })
 //formulario editar
-router.get('/edit-pagamento/:id', (req, res) => {
+router.get('/edit-pagamento/:id', eAdmin, (req, res) => {
   Pagamento.findOne({ _id: req.params.id }).populate("catpagamento").then((pagamento) => {
     CatPagamento.find().then((catpagamentos) => {
       res.render("admin/pagamento/edit", { pagamento: pagamento, catpagamentos: catpagamentos })
@@ -263,7 +281,7 @@ router.get('/edit-pagamento/:id', (req, res) => {
 })
 //atualizar dados editados
 //falta fazer verificação se existe repetido
-router.post('/update-pagamento', (req, res) => {
+router.post('/update-pagamento', eAdmin, (req, res) => {
   Pagamento.findOne({ _id: req.body.id }).then((pagamento) => {
     pagamento.nome = req.body.nome,
       pagamento.valor = req.body.valor.toString().replace(",", "."),
@@ -283,7 +301,7 @@ router.post('/update-pagamento', (req, res) => {
   })
 })
 //deletar dados db pagamento
-router.get('/del-pagamento/:id', (req, res) => {
+router.get('/del-pagamento/:id', eAdmin, (req, res) => {
   Pagamento.deleteOne({ _id: req.params.id }).then(() => {
     req.flash("success_msg", "Pagamento apagado com sucesso!")
     res.redirect("/admin/pagamento")
@@ -295,7 +313,7 @@ router.get('/del-pagamento/:id', (req, res) => {
 
 
 /** Categoria pagamentos cat-pagamento **/
-router.get('/cat-pagamento', (req, res) => {
+router.get('/cat-pagamento', eAdmin, (req, res) => {
   CatPagamento.find().then((catpagamento) => {
     res.render("admin/cat-pagamento/index", { catpagamentos: catpagamento })
   }).catch((erro) => {
@@ -304,9 +322,8 @@ router.get('/cat-pagamento', (req, res) => {
   })
 })
 //visualizar dados cat-pagamento
-router.get('/vis-cat-pagamento/:id', (req, res) => {
+router.get('/vis-cat-pagamento/:id', eAdmin, (req, res) => {
   CatPagamento.findOne({ _id: req.params.id }).then((catpagamento) => {
-    console.log(catpagamento)
     res.render("admin/cat-pagamento/ver", { catpagamento: catpagamento })
   }).catch((erro) => {
     req.flash("error_msg", "Error: Categoria de pagamento não encontrado!")
@@ -314,12 +331,12 @@ router.get('/vis-cat-pagamento/:id', (req, res) => {
   })
 })
 //formulario cadastrar cat-pagamento
-router.get('/cad-cat-pagamento', (req, res) => {
+router.get('/cad-cat-pagamento', eAdmin, (req, res) => {
   res.render("admin/cat-pagamento/cad")
 })
 //inserir dados no db cat-pagamento
 //falta fazer verificação se existe repetido
-router.post('/add-cat-pagamento', (req, res) => {
+router.post('/add-cat-pagamento', eAdmin, (req, res) => {
   var errors = []
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
     errors.push({ error: "Necessário preencher o campo nome!" })
@@ -339,7 +356,7 @@ router.post('/add-cat-pagamento', (req, res) => {
   }
 })
 //formulario editar
-router.get('/edit-cat-pagamento/:id', (req, res) => {
+router.get('/edit-cat-pagamento/:id', eAdmin, (req, res) => {
   CatPagamento.findOne({ _id: req.params.id }).then((catpagamento) => {
     res.render("admin/cat-pagamento/edit", { catpagamento: catpagamento })
   }).catch((error) => {
@@ -349,7 +366,7 @@ router.get('/edit-cat-pagamento/:id', (req, res) => {
 })
 //atualizar dados editados
 //falta fazer verificação se existe repetido
-router.post('/update-cat-pagamento', (req, res) => {
+router.post('/update-cat-pagamento', eAdmin, (req, res) => {
   CatPagamento.findOne({ _id: req.body.id }).then((catpagamento) => {
     catpagamento.nome = req.body.nome
     catpagamento.save().then(() => {
@@ -366,7 +383,7 @@ router.post('/update-cat-pagamento', (req, res) => {
 })
 //deletar dados db cat-pagamento
 //feito verificação de tabelas estrangeiras
-router.get('/del-cat-pagamento/:id', (req, res) => {
+router.get('/del-cat-pagamento/:id', eAdmin, (req, res) => {
   Pagamento.findOne({ catpagamento: req.params.id }).then((pagamento) => {
     if (pagamento) {
       req.flash("error_msg", "Error: Categoria de pagamento não foi apagado, há pagamentos cadastrado com essa categoria!")
@@ -389,7 +406,7 @@ router.get('/del-cat-pagamento/:id', (req, res) => {
 
 
 /** Usuario **/
-router.get('/usuario', (req, res) => {
+router.get('/usuario', eAdmin, (req, res) => {
   const { page = 1 } = req.query
   Usuario.paginate({}, { sort: { created: -1 }, populate: 'nivacesso', page: page, limit: 10 }).then((usuarios) => {
     //console.log(usuarios)
@@ -408,7 +425,7 @@ router.get('/usuario', (req, res) => {
   */
 })
 /** Cadastar Usuario */
-router.get('/cad-usuario', (req, res) => {
+router.get('/cad-usuario', eAdmin, (req, res) => {
   NivAcesso.find().sort({ ordem: +1 }).then((nivacessos) => {
     res.render("admin/usuario/cad", { nivacessos: nivacessos })
   }).catch((error) => {
@@ -417,7 +434,7 @@ router.get('/cad-usuario', (req, res) => {
   })
 })
 /** Add Usuario */
-router.post("/add-usuario", (req, res) => {
+router.post("/add-usuario", eAdmin, (req, res) => {
   var dados_usuario = req.body
   var errors = []
   if (!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null) {
@@ -505,7 +522,7 @@ router.post("/add-usuario", (req, res) => {
   }
 })
 /** Editar Usuário */
-router.get('/edit-usuario/:id', (req, res) => {
+router.get('/edit-usuario/:id', eAdmin, (req, res) => {
   Usuario.findOne({ _id: req.params.id }).populate("nivacesso").then((usuario) => {
     NivAcesso.find().sort({ ordem: +1 }).then((nivacessos) => {
       res.render("admin/usuario/edit", { usuario: usuario, nivacessos: nivacessos })
@@ -518,7 +535,7 @@ router.get('/edit-usuario/:id', (req, res) => {
   })
 })
 /** Update Usuário */
-router.post('/update-usuario', (req, res) => {
+router.post('/update-usuario', eAdmin, (req, res) => {
   Usuario.findOne({ _id: req.body.id }).then((usuario) => {
     usuario.nome = req.body.nome,
       usuario.email = req.body.email,
@@ -536,7 +553,7 @@ router.post('/update-usuario', (req, res) => {
   })
 })
 /** Visualizar Usuário */
-router.get('/vis-usuario/:id', (req, res) => {
+router.get('/vis-usuario/:id', eAdmin, (req, res) => {
   Usuario.findOne({ _id: req.params.id }).populate("nivacesso").then((usuario) => {
     res.render("admin/usuario/ver", { usuario: usuario })
   }).catch((erro) => {
@@ -545,7 +562,7 @@ router.get('/vis-usuario/:id', (req, res) => {
   })
 })
 /** Deletar Usuário */
-router.get('/del-usuario/:id', (req, res) => {
+router.get('/del-usuario/:id', eAdmin, (req, res) => {
   Usuario.deleteOne({ _id: req.params.id }).then((usuario) => {
     req.flash("success_msg", "Usuário apagado com sucesso!")
     res.redirect("/admin/usuario")
